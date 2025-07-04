@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'mini_' + (window.location.pathname.split('/')[1] || 'default');
+const STORAGE_KEY = 'mini_' + location.pathname.replace(/\W+/g, '_') + location.search.replace(/\W+/g, '_');
 let TASKS = ["Grab Keys", "Check Wallet", "Turn Off Lights", "Lock Door"];
 let state = {};
 
