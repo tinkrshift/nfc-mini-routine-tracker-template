@@ -1,8 +1,9 @@
+const STORAGE_KEY = 'mini_' + (window.location.pathname.split('/')[1] || 'default');
 let TASKS = ["Grab Keys", "Check Wallet", "Turn Off Lights", "Lock Door"];
 let state = {};
 
 function loadState() {
-  const saved = JSON.parse(localStorage.getItem("mini_routine_data"));
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
   if (saved) {
     TASKS = saved.tasks;
     state = saved.state || {};
@@ -13,11 +14,9 @@ function loadState() {
   saveState();
 }
 
-
 function saveState() {
   const title = document.querySelector("h2").innerText;
-  localStorage.setItem("mini_routine_data", JSON.stringify({ tasks: TASKS, state, title }));
-
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ tasks: TASKS, state, title }));
 }
 
 function renderTasks() {
@@ -34,12 +33,12 @@ function renderTasks() {
       state[task] = box.checked;
       saveState();
       renderTasks();
-  const saved = JSON.parse(localStorage.getItem("mini_routine_data"));
-  if (saved && saved.title) {
-    document.querySelector("h2").innerText = saved.title;
-    const titleBox = document.getElementById("routine-title");
-    if (titleBox) titleBox.value = saved.title;
-  }
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (saved && saved.title) {
+        document.querySelector("h2").innerText = saved.title;
+        const titleBox = document.getElementById("routine-title");
+        if (titleBox) titleBox.value = saved.title;
+      }
     };
     if (!state[task]) allDone = false;
     li.appendChild(box);
@@ -47,20 +46,18 @@ function renderTasks() {
     ul.appendChild(li);
   });
 
-  
-if (allDone && TASKS.length > 0) {
-  TASKS.forEach(task => state[task] = false);
-  saveState();
-  setTimeout(() => window.close(), 300);
-}
-
+  if (allDone && TASKS.length > 0) {
+    TASKS.forEach(task => state[task] = false);
+    saveState();
+    setTimeout(() => window.close(), 300);
+  }
 }
 
 function resetRoutine() {
   TASKS.forEach(task => state[task] = false);
   saveState();
   renderTasks();
-  const saved = JSON.parse(localStorage.getItem("mini_routine_data"));
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
   if (saved && saved.title) {
     document.querySelector("h2").innerText = saved.title;
     const titleBox = document.getElementById("routine-title");
@@ -97,12 +94,12 @@ function renderEditList() {
       delete state[task];
       saveState();
       renderTasks();
-  const saved = JSON.parse(localStorage.getItem("mini_routine_data"));
-  if (saved && saved.title) {
-    document.querySelector("h2").innerText = saved.title;
-    const titleBox = document.getElementById("routine-title");
-    if (titleBox) titleBox.value = saved.title;
-  }
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (saved && saved.title) {
+        document.querySelector("h2").innerText = saved.title;
+        const titleBox = document.getElementById("routine-title");
+        if (titleBox) titleBox.value = saved.title;
+      }
       renderEditList();
     };
     li.appendChild(btn);
@@ -119,7 +116,7 @@ function addTask() {
   saveState();
   input.value = "";
   renderTasks();
-  const saved = JSON.parse(localStorage.getItem("mini_routine_data"));
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
   if (saved && saved.title) {
     document.querySelector("h2").innerText = saved.title;
     const titleBox = document.getElementById("routine-title");
@@ -172,7 +169,7 @@ window.onload = () => {
   }
   loadState();
   renderTasks();
-  const saved = JSON.parse(localStorage.getItem("mini_routine_data"));
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
   if (saved && saved.title) {
     document.querySelector("h2").innerText = saved.title;
     const titleBox = document.getElementById("routine-title");
@@ -186,23 +183,22 @@ window.onload = () => {
   });
 };
 
-
 function showReadme() {
   document.getElementById("readme-modal").style.display = "block";
 }
+
 function hideReadme() {
   document.getElementById("readme-modal").style.display = "none";
 }
-
 
 function updateTitle() {
   const titleInput = document.getElementById("routine-title");
   const title = titleInput.value.trim();
   document.querySelector("h2").innerText = title || "Quick Routine";
 
-  const saved = JSON.parse(localStorage.getItem("mini_routine_data")) || {};
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
   saved.title = title;
   saved.tasks = TASKS;
   saved.state = state;
-  localStorage.setItem("mini_routine_data", JSON.stringify(saved));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 }
